@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.util.Log;
 import android.view.View;
 
 import android.widget.SearchView;
@@ -132,7 +133,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     // create marker
                     MarkerOptions marker = new MarkerOptions();
 
-                    marker.position(new LatLng(address.getLatitude(), address.getLongitude())).title(location);
+                    //marker.position(new LatLng(address.getLatitude(), address.getLongitude())).title(location);
+                    marker.position(new LatLng(address.getLatitude(), address.getLongitude())).title("Found a Truck!");
                     marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.foodtruckicon4));
 
 
@@ -166,6 +168,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     // now get the lat/lon from the location and do something with it.
                     //nowDoSomethingWith(location.getLatitude(), location.getLongitude());
 
+                    Log.i("LOCATION: ", location.toString());
+
                     if(location != null){
                         LatLng myLocation = new LatLng(location.getLatitude(),location.getLongitude());
 
@@ -191,6 +195,27 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng point) {
+                //allPoints.add(point);
+
+                Log.i("ponto: ", point.toString());
+
+
+                // create marker
+                MarkerOptions marker = new MarkerOptions();
+                marker.position(point).title("Found a Truck!");
+                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.foodtruckicon4));
+
+
+                map.addMarker(marker);
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(point,12));
+
+                //map.clear();
+                //map.addMarker(new MarkerOptions().position(point));
+            }
+        });
     }
 
     public void getMyLocation(View view){
