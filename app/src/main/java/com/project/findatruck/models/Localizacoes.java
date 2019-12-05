@@ -8,14 +8,16 @@ public class Localizacoes implements Serializable {
     private String latitude;
     private String longitude;
     private String usuario_cadastrante;
+    private String endereco;
 
     public Localizacoes(){ }
 
-    public Localizacoes(int id, String latitude, String longitude, String usuario_cadastrante) {
+    public Localizacoes(int id, String latitude, String longitude, String usuario_cadastrante, String endereco) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.usuario_cadastrante = usuario_cadastrante;
+        this.endereco = endereco;
     }
 
     public int getId() {
@@ -48,6 +50,14 @@ public class Localizacoes implements Serializable {
 
     public void setUsuario_cadastrante(String usuario_cadastrante) {
         this.usuario_cadastrante = usuario_cadastrante;
+    }
+
+    public String getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
     }
 
     @Override

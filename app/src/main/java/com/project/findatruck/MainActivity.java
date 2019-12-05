@@ -153,13 +153,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         dao = new LocalizacaoDAO(getBaseContext());
         ArrayList<Localizacoes> locList = new ArrayList<Localizacoes>();
         locList = dao.getLocalizacoes();
+        Localizacoes loca = new Localizacoes();
 
         Log.i("LOCLIST: ", locList.toString());
 
-        for (Iterator<Localizacoes> i = locList.iterator(); i.hasNext();) {
-            //String item = i.next();
-            //System.out.println(item);
-            Log.i("A:", i.next().toString());
+        for (Iterator<Localizacoes> localizacao = locList.iterator(); localizacao.hasNext();) {
+            loca = localizacao.next();
+            Log.i("LOCAAAAA: ", loca.getLatitude());
+
+            //create marker
+            MarkerOptions marker = new MarkerOptions();
+
+            marker.position(new LatLng(Double.parseDouble(loca.getLatitude()), Double.parseDouble(loca.getLongitude()))).title(loca.getEndereco());
+            //marker.position(new LatLng(address.getLatitude(), address.getLongitude())).title(address.getAddressLine(0));
+            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.foodtruckicon4));
+
+
+            map.addMarker(marker);
+
         }
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -191,7 +202,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             if(confirmed == true){
 
 
-                                boolean success = dao.salvar(String.valueOf(latLng.latitude), String.valueOf(latLng.longitude), "Jonatas");
+                                boolean success = dao.salvar(String.valueOf(latLng.latitude), String.valueOf(latLng.longitude), "Jonatas", address.getAddressLine(0));
 
                                 if(success){
                                     // create marker
@@ -211,6 +222,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     .setNegativeButton(R.string.no, null).show();
             }
         });
+
     }
 
     public void getMyLocation(View view){
