@@ -90,30 +90,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     address = addressList.get(0);
                     latLng = new LatLng(address.getLatitude(),address.getLongitude());
 
-                    new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("Confirmação")
-                            .setMessage("Salvar este Food Truck?")
-                            .setIcon(R.drawable.foodtruckicon4)
-                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    controller = new MainController();
-                                    confirmed = controller.cadastrarEvento(latLng); //chama o controller
-                                    if(confirmed == true){
-                                        // create marker
-                                        MarkerOptions marker = new MarkerOptions();
-
-                                        //marker.position(new LatLng(address.getLatitude(), address.getLongitude())).title(location);
-                                        marker.position(new LatLng(address.getLatitude(), address.getLongitude())).title("Found a Truck!");
-                                        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.foodtruckicon4));
-
-
-                                        map.addMarker(marker);
-                                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,12));
-                                        Toast.makeText(MainActivity.this, "Evento Cadastrado!", Toast.LENGTH_SHORT).show();
-                                    }
-                                }})
-                            .setNegativeButton(R.string.no, null).show();
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
 
                 }
                 return false;
@@ -158,8 +135,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                     Manifest.permission.ACCESS_COARSE_LOCATION },
                             TAG_CODE_PERMISSION_LOCATION);
                 }
-
-
             }
         });
 
@@ -172,23 +147,45 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onMapClick(LatLng point) {
-                //allPoints.add(point);
+            public void onMapClick(final LatLng point) {
 
-                Log.i("ponto: ", point.toString());
+                Geocoder geocoder = new Geocoder(MainActivity.this);
+                List<Address> addressList = null;
+
+                try{
+                    addressList = geocoder.getFromLocation(point.latitude,point.longitude,1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                address = addressList.get(0);
+                Log.i("ENDERECO: ",address.getAddressLine(0));
+                latLng = new LatLng(address.getLatitude(),address.getLongitude());
+
+                new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Confirmação")
+                    .setMessage("Salvar este Food Truck?")
+                    .setIcon(R.drawable.foodtruckicon4)
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            controller = new MainController();
+                            confirmed = controller.cadastrarEvento(latLng); //chama o controller
+                            if(confirmed == true){
+                                // create marker
+                                MarkerOptions marker = new MarkerOptions();
+
+                                //marker.position(new LatLng(address.getLatitude(), address.getLongitude())).title(location);
+                                marker.position(new LatLng(address.getLatitude(), address.getLongitude())).title(address.getAddressLine(0));
+                                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.foodtruckicon4));
 
 
-                // create marker
-                MarkerOptions marker = new MarkerOptions();
-                marker.position(point).title("Found a Truck!");
-                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.foodtruckicon4));
-
-
-                map.addMarker(marker);
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(point,12));
-
-                //map.clear();
-                //map.addMarker(new MarkerOptions().position(point));
+                                map.addMarker(marker);
+                                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,12));
+                                Toast.makeText(MainActivity.this, "Food Truck Cadastrado!", Toast.LENGTH_SHORT).show();
+                            }
+                        }})
+                    .setNegativeButton(R.string.no, null).show();
             }
         });
     }
