@@ -37,6 +37,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 import com.project.findatruck.controllers.MainController;
+import com.project.findatruck.database.DAO.LocalizacaoDAO;
+import com.project.findatruck.models.Localizacoes;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -47,6 +49,8 @@ import android.view.Menu;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -62,6 +66,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     MainController controller;
     LatLng latLng;
     boolean confirmed = false;
+    LocalizacaoDAO dao;
     Address address;
 
     @Override
@@ -145,6 +150,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
+        dao = new LocalizacaoDAO(getBaseContext());
+        ArrayList<Localizacoes> locList = new ArrayList<Localizacoes>();
+        locList = dao.getLocalizacoes();
+
+        Log.i("LOCLIST: ", locList.toString());
+
+        for (Iterator<Localizacoes> i = locList.iterator(); i.hasNext();) {
+            //String item = i.next();
+            //System.out.println(item);
+            Log.i("A:", i.next().toString());
+        }
+
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(final LatLng point) {
@@ -172,17 +189,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             controller = new MainController();
                             confirmed = controller.cadastrarEvento(latLng); //chama o controller
                             if(confirmed == true){
-                                // create marker
-                                MarkerOptions marker = new MarkerOptions();
-
-                                //marker.position(new LatLng(address.getLatitude(), address.getLongitude())).title(location);
-                                marker.position(new LatLng(address.getLatitude(), address.getLongitude())).title(address.getAddressLine(0));
-                                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.foodtruckicon4));
 
 
-                                map.addMarker(marker);
-                                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,12));
-                                Toast.makeText(MainActivity.this, "Food Truck Cadastrado!", Toast.LENGTH_SHORT).show();
+                                boolean success = dao.salvar(String.valueOf(latLng.latitude), String.valueOf(latLng.longitude), "Jonatas");
+
+                                if(success){
+                                    // create marker
+                                    MarkerOptions marker = new MarkerOptions();
+
+                                    //marker.position(new LatLng(address.getLatitude(), address.getLongitude())).title(location);
+                                    marker.position(new LatLng(address.getLatitude(), address.getLongitude())).title(address.getAddressLine(0));
+                                    marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.foodtruckicon4));
+
+
+                                    map.addMarker(marker);
+                                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,12));
+                                    Toast.makeText(MainActivity.this, "Food Truck Cadastrado!", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }})
                     .setNegativeButton(R.string.no, null).show();
