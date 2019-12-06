@@ -22,12 +22,12 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         mp = MediaPlayer.create(this, R.raw.start_song);
-        mp.start();
-
+        
         //Thread que da o tempo para a apresentação da aplicação
         new Thread(new Runnable() {
             public void run() {
                 try {
+                    mp.start();
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
