@@ -1,6 +1,8 @@
 package com.project.findatruck;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,6 +32,7 @@ import android.view.View;
 
 import android.widget.SearchView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -73,6 +76,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     boolean confirmed = false;
     LocalizacaoDAO dao;
     Address address;
+    private NavigationView nv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +149,26 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                     Manifest.permission.ACCESS_COARSE_LOCATION },
                             TAG_CODE_PERMISSION_LOCATION);
                 }
+            }
+        });
+
+        nv = (NavigationView)findViewById(R.id.nav_view);
+        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                switch(id)
+                {
+                    case R.id.list_items:
+                        Intent intent = new Intent(MainActivity.this, InfoActivity.class);
+                        startActivity(intent);
+
+                    case R.id.get_out:
+                        System.exit(0);
+                    default:
+                        return true;
+                }
+
             }
         });
 

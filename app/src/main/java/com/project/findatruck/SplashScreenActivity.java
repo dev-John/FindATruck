@@ -27,8 +27,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    mp.start();
-                    Thread.sleep(1000);
+                    mp.start(); //toca a musica
+                    Thread.sleep(1000); //tempo de 1 segundo para o loader
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
