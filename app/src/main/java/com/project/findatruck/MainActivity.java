@@ -9,6 +9,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,7 +22,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import android.widget.SearchView;
@@ -54,12 +58,13 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener {
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     GoogleMap map;
     SupportMapFragment mapFragment;
     SearchView searchView;
     FloatingActionButton fab;
+    View view;
 
     private final int TAG_CODE_PERMISSION_LOCATION=1;
 
@@ -213,6 +218,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                     marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.foodtruckicon4));
 
 
+                                    vibrar(view);
                                     map.addMarker(marker);
                                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,12));
                                     Toast.makeText(MainActivity.this, "Food Truck Cadastrado!", Toast.LENGTH_SHORT).show();
@@ -223,6 +229,30 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+    }
+
+    public void vibrar(View view){
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        if (Build.VERSION. SDK_INT >= Build.VERSION_CODES. O ) {
+            vibrator.vibrate(VibrationEffect. createOneShot ( 500 ,
+                    VibrationEffect. DEFAULT_AMPLITUDE )) ;
+        } else {
+            //deprecated in API 26
+            vibrator.vibrate( 500 ) ;
+        }
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+
+        Log.i("DRAAAAAAAAAW", item.toString());
+        //calling the method displayselectedscreen and passing the id of selected menu
+
+        /*displaySelectedFragment(item.getItemId());*/
+
+        return true;
     }
 
     public void getMyLocation(View view){

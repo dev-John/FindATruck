@@ -4,6 +4,21 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
+        <item android:title="Submenu title">
+            <menu>
+                <item
+                    android:id="@+id/map_menu"
+                    android:title="Mapa"
+                    android:icon="@drawable/ic_location"/>
+
+                <item
+                    android:id="@+id/list_items"
+                    android:title="Meus Cadastros"
+                    android:icon="@drawable/ic_list"/>
+
+            </menu>
+        </item>
+
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
